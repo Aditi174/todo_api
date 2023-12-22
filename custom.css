@@ -53,3 +53,10 @@ button {
     font-size: 19px;
     margin-bottom: 10px;
 }
+
+.newlist{
+    padding: 10px;
+    border: 2px solid rgb(8, 92, 92);
+    font-size: 19px;
+    margin-bottom: 10px;
+}
