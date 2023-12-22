@@ -20,7 +20,7 @@ body{
 .title{
     display: flex;
     justify-content: center;
-    margin-bottom:13px ;
+   padding-bottom: 15px;
 }
 
 .inputitems{
@@ -59,4 +59,10 @@ button {
     border: 2px solid rgb(8, 92, 92);
     font-size: 19px;
     margin-bottom: 10px;
+}
+
+.lists i{
+   display: flex;
+   justify-content: flex-end;
+   align-items: center;
 }

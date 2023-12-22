@@ -13,6 +13,12 @@ async function displaytodo() {
         listitems.classList.add("items")
         listitems.textContent = todos.todo
 
+        let deleteicon = document.createElement("i");
+        deleteicon.className = "fa-solid fa-trash";
+        deleteicon.classList.add("delete")
+        listitems.appendChild(deleteicon);
+
+
         todocontainer.appendChild(listitems)
     }
 
