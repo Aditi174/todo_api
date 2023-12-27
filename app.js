@@ -22,7 +22,7 @@ async function displaytodo() {
 
         deleteicon.addEventListener("click",()=>{
             deletetodoitem(listitems.id)
-            deleteItemFromList(todos.todo)
+            deleteItemFromList(listitems.textContent)
         })
 
 
@@ -63,14 +63,19 @@ async function addNewTodoList() {
 }
 
 async function deletetodoitem(todoid) {
-    const deleteitem = await fetch('https://dummyjson.com/todos/${todoid}', {
+    const deleteitem = await fetch(`https://dummyjson.com/todos/${todoid}`, {
         method: 'DELETE',
     })
     return await deleteitem.json()
 }
 
 async function deleteItemFromList(todoitem){
-    
+    const listvalue = document.getElementsByClassName("items");
+
+    for (let item of listvalue) {
+        if (item.textContent === todoitem) {
+            item.remove();
+}}
 }
 
 displaytodo()
