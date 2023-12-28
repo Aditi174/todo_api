@@ -10,10 +10,15 @@ async function displaytodo() {
     const tododata = data.todos
 
     for (let todos of tododata) {
-        const listitems = document.createElement("li")
+        const listitems = document.createElement("ul")
         listitems.classList.add("items")
         listitems.id = todos.id
-        listitems.textContent = todos.todo
+
+        const newlist = document.createElement("li")
+        newlist.classList.add("newitems")
+        newlist.textContent = todos.todo
+
+        listitems.appendChild(newlist)
 
         let deleteicon = document.createElement("i");
         deleteicon.className = "fa-solid fa-trash";
@@ -31,7 +36,7 @@ async function displaytodo() {
         })
 
         editicon.addEventListener("click", () => {
-            editValueOfList(listitems.textContent, listitems.id)
+            editValueOfList(newlist.textContent, listitems.id)
         })
 
         todocontainer.appendChild(listitems)
@@ -101,13 +106,13 @@ async function editValueOfList(value,id) {
     popupInputField.value = value
     popup.appendChild(popupInputField)
 
-    const popupbutton = document.createElement("button")
-    popupbutton.classList.add("btn")
-    popupbutton.type = "submit"
-    popupbutton.textContent = "save"
-    popup.appendChild(popupbutton)
+    const popupsavebutton = document.createElement("button")
+    popupsavebutton.classList.add("btn")
+    popupsavebutton.type = "submit"
+    popupsavebutton.textContent = "save"
+    popup.appendChild(popupsavebutton)
 
-    popupbutton.addEventListener("click",async()=>{
+    popupsavebutton.addEventListener("click",async()=>{
         const newvalue = popupInputField.value
         const addNewValue = await fetch(`https://dummyjson.com/todos/${id}`, {
             method: 'PUT', /* or PATCH */
@@ -116,9 +121,11 @@ async function editValueOfList(value,id) {
                 todo:newvalue
             })
         })
-        const listvalue = document.getElementsByClassName("items");
-        if(listvalue){
-            listvalue.textContent=newvalue;
+        const listvalue = document.getElementsByClassName("newitems");
+        for(let i of listvalue){
+            if(i.textContent===value){
+                i.textContent=newvalue
+            }
         }
         
         overlay.style.opacity = 0;
