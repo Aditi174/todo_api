@@ -20,16 +20,23 @@ async function displaytodo() {
         deleteicon.classList.add("delete")
         listitems.appendChild(deleteicon);
 
-        deleteicon.addEventListener("click",()=>{
+        let editicon = document.createElement("span")
+        editicon.className = "material-symbols-outlined";
+        editicon.textContent = "edit";
+        listitems.appendChild(editicon);
+
+        deleteicon.addEventListener("click", () => {
             deletetodoitem(listitems.id)
             deleteItemFromList(listitems.textContent)
         })
 
+        editicon.addEventListener("click", () => {
+            editValueOfList(listitems.textContent, listitems.id)
+        })
 
         todocontainer.appendChild(listitems)
         array.push(todos.todo)
     }
-    console.log(array)
 
 }
 
@@ -69,13 +76,58 @@ async function deletetodoitem(todoid) {
     return await deleteitem.json()
 }
 
-async function deleteItemFromList(todoitem){
+async function deleteItemFromList(todoitem) {
     const listvalue = document.getElementsByClassName("items");
 
     for (let item of listvalue) {
         if (item.textContent === todoitem) {
             item.remove();
-}}
+        }
+    }
+}
+
+async function editValueOfList(value,id) {
+    const overlay = document.createElement("div")
+    overlay.classList.add("overlay")
+    document.body.append(overlay)
+
+    const popup = document.createElement("div")
+    popup.classList.add("popup")
+    document.body.append(popup)
+
+    const popupInputField = document.createElement("input")
+    popupInputField.classList.add("popupinput")
+    popupInputField.type = "text"
+    popupInputField.value = value
+    popup.appendChild(popupInputField)
+
+    const popupbutton = document.createElement("button")
+    popupbutton.classList.add("btn")
+    popupbutton.type = "submit"
+    popupbutton.textContent = "save"
+    popup.appendChild(popupbutton)
+
+    popupbutton.addEventListener("click",async()=>{
+        const newvalue = popupInputField.value
+        const addNewValue = await fetch(`https://dummyjson.com/todos/${id}`, {
+            method: 'PUT', /* or PATCH */
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                todo:newvalue
+            })
+        })
+        const listvalue = document.getElementsByClassName("items");
+        if(listvalue){
+            listvalue.textContent=newvalue;
+        }
+        
+        overlay.style.opacity = 0;
+        overlay.style.display = "none";
+        popup.style.display = "none"
+        return await addNewValue.json()
+        
+        
+    })
 }
 
 displaytodo()
