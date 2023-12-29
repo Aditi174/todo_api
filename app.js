@@ -1,7 +1,6 @@
 const todocontainer = document.getElementById("List")
 
 const input = document.getElementById("input")
-const array = []
 
 async function displaytodo() {
     const todoapiresult = await fetch('https://dummyjson.com/todos');
@@ -40,7 +39,6 @@ async function displaytodo() {
         })
 
         todocontainer.appendChild(listitems)
-        array.push(todos.todo)
     }
 
 }
@@ -65,14 +63,59 @@ async function addNewTodoList() {
     const response = await addNewTodo()
     const data = response.todo
 
-    const NewTodoListItems = document.createElement("li")
+    const NewTodoListItems = document.createElement("ul")
     NewTodoListItems.classList.add("newlist")
-    NewTodoListItems.textContent = data
+
+    const NewTodoListvalue = document.createElement("li")
+    NewTodoListvalue.classList.add("list")
+    NewTodoListvalue.textContent = data
+    NewTodoListItems.appendChild(NewTodoListvalue)
+
+    
+    let deleteicon = document.createElement("i");
+    deleteicon.className = "fa-solid fa-trash";
+    deleteicon.classList.add("delete")
+    NewTodoListItems.appendChild(deleteicon)
+
+    let editicon = document.createElement("span")
+    editicon.className = "material-symbols-outlined";
+    editicon.textContent = "edit";
+    NewTodoListItems.appendChild(editicon);
+
+    deleteicon.addEventListener("click",()=>{
+        deleteItemOfNewlist(NewTodoListItems.textContent)
+    })
+
+    editicon.addEventListener("click",()=>{
+        updateItemOfNewList(NewTodoListvalue.textContent)
+    })
 
     todocontainer.insertBefore(NewTodoListItems, todocontainer.firstChild)
     input.value = ""
 
 }
+
+async function deleteItemOfNewlist(i){
+
+    const itemfromcreatedlist = document.getElementsByClassName("newlist")
+
+    for(let item of itemfromcreatedlist){
+        if(item.textContent === i){
+            item.remove()
+        }
+    }
+
+}
+
+// async function updateItemOfNewList(j){
+//     const updateitemfromlist = document.getElementsByClassName("list")
+//     for(let text of updateitemfromlist){
+//         if(text.textContent === j){
+
+//         }
+//     }
+
+// }
 
 async function deletetodoitem(todoid) {
     const deleteitem = await fetch(`https://dummyjson.com/todos/${todoid}`, {
@@ -91,7 +134,7 @@ async function deleteItemFromList(todoitem) {
     }
 }
 
-async function editValueOfList(value,id) {
+async function editValueOfList(value, id) {
     const overlay = document.createElement("div")
     overlay.classList.add("overlay")
     document.body.append(overlay)
@@ -112,28 +155,28 @@ async function editValueOfList(value,id) {
     popupsavebutton.textContent = "save"
     popup.appendChild(popupsavebutton)
 
-    popupsavebutton.addEventListener("click",async()=>{
+    popupsavebutton.addEventListener("click", async () => {
         const newvalue = popupInputField.value
         const addNewValue = await fetch(`https://dummyjson.com/todos/${id}`, {
             method: 'PUT', /* or PATCH */
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                todo:newvalue
+                todo: newvalue
             })
         })
         const listvalue = document.getElementsByClassName("newitems");
-        for(let i of listvalue){
-            if(i.textContent===value){
-                i.textContent=newvalue
+        for (let i of listvalue) {
+            if (i.textContent === value) {
+                i.textContent = newvalue
             }
         }
-        
+
         overlay.style.opacity = 0;
         overlay.style.display = "none";
         popup.style.display = "none"
         return await addNewValue.json()
-        
-        
+
+
     })
 }
 
